@@ -1,0 +1,40 @@
+Dumitrache Daniela Andreea - 311CB
+
+	1.Histograma RGB
+Extrag R,G,B din matricea tri-dimensionala returnata de functia imread.
+Parcurg cu un for cele count_beans intervale si numar pixelii din fiecare matrice pe intervale de forma ceruta in enunt. Pentru a face cautarea intr-un mod mai eficient folosesc functia find, iar apoi pun intr-un vector pe pozitiile corespunzatoare lungimea vectorului returnat de aceasta, care reprezinta numarul de pixeli din interval pentru fiecare matrice.
+	
+	2. Histograma HSV
+Extrag R,G,B din matricea tri-dimensionala returnata de functia imread, iar apoi le impart la 255, conform algoritmului, obitinand matricele R1, G1 si B1. Initializez matricele H, S si V cu zero. Apoi calculez in alte matrice maximul, minimul si diferenta pentru matricele  R1, B1 si G1.
+Incep prin a construi matricea H, unde pe pozitiile ce respecta un anumit criteriu pun valoarea specificata in algoritm. Testez inainte de a efectua impartiri, pentru a fi sigura ca nu exista nicaieri posibilitatea une impartiri la 0. Matricele S si V le construiesc in mod asemanator.
+Impart 1.01 la count_beans pentru a determina capetele de interval deoarece S si V iau valori in [0,100] => 101 valori in total; impart la 100 pentru a le aduce in [0.1], la fel ca si H.
+Pentru a obtine vectorul de valori pentru histograma, parcurg matricele folosind tot functia find, in acelasi mod ca la Task1.
+ 
+	3.Preprocess
+Folosind functia getImgNames obtin doua matrice, y1 si y2, cu calea completa catre cele doua subdirectoare cu imagini. Numarul de linii din aceste matrici imi va da numarul de imagini din fiecare subdirector. Dupa aceea creez vectorul t in functie de cele 2 posibilitati: cats si not_cats, punand 1 si respectiv -1 pe pozitiile corespunzatoare. Intializez o matrice X cu 3*count_beans coloane si linii cat numarul total de imagini. In functie de sirul dat ca parametru apelez functia pentru histograma corespunzatoare si pun pe fiecare linie valorile pentru histograma pozei respective.
+	
+	4.Learn
+Construiesc o noua matrice, M, care va fi egala cu matricea X obtinuta anterior + o coloana de 1, conform enuntului. Am rezolvat sistemul din enunt aplicand descompunerea QR pe matricea A = X'X. 
+In functia Hounseholder am implementat rezolvarea unui sistem detipul Ax = b, cu descompunerea matricei A in QR si aflarea necunoscutei X prin rezolvarea unui sistem superior triunghiular, asa cum am facut la curs.
+Vectorul w va si returnat direct de functia Householder.
+
+	5.Evaluate
+Obtin calea catre subdirectoarele cats si not_cats la fel ca in functia preprocess. Declar un vector coloana X cu 3*count_beans + 1 elemente *cu ultima coloana 1* pentru a pune in el valorile returnate de histograme. In functie de sirul dat ca parametru completez vectorul X si fac produsul scalar cu w'. Daca ma aflu in subdirectorul cats si produsul scalar este pozitiv, incrementez numarul de pisici indentificate corect. Similar si pentru subdirectorul not_cats: daca produsul scalar este negativ, incrementez numarul de imagini identificate corect. Lafinal calculez acuratetea ca raport dintre numarul de imagini identificate corect si numarul de imagini total.
+
+	rezultate:
+count_beans 20: RGB: 85.714286% , timp executie 5.268648s
+		HSV: 89.682540%, timp de executie 5.740953s
+
+count_beans 16: RGB: 85.714286%, timp executie 5.605445s
+		HSV: 87.301587%, timp executie 5.362679s
+
+count_beans 30: RGB: 81.746032%, timp executie 7.730837s
+		HSV: 88.888889%, timp executie 7.522011s
+
+count_beans 18: RGB:  84.126984%, timp executie 10.337149s
+		HSV:  86.507937%, timp executie 8.597831s
+
+count_beans 25: RGB: 81.746032%, timp executie 6.875613s
+		HSV: 88.095238%, timp executie 6.446802s
+
+Se observa ca cele mai bune rezultate se obtin pentru count_beans 20. Timpul de executie este direct proportional cu count_beans. De asemenea, se observa ca histogramele HSv dau rezultate mai stabile in timp spre deosebire de RGB, unde acuratetea scade semnificativ odata cu cresterea count_beans.
